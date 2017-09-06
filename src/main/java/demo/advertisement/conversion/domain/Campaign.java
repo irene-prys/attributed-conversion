@@ -6,6 +6,7 @@ public class Campaign {
     private CampaignType type;
     private long campaignId;
     private AttributionWindow attributionWindow;
+    private boolean attributed;// todo: think it over
 
     public Campaign() {
     }
@@ -42,5 +43,13 @@ public class Campaign {
 
     public boolean isActive(Date eventDate) {
         return attributionWindow.isInRange(eventDate);
+    }
+
+    public void attribute() {
+        attributed = true;
+    }
+
+    public boolean isAttributed() {
+        return attributed;
     }
 }

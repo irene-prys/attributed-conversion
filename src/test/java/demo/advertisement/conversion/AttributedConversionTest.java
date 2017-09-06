@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AttributedConversionTest {
     @Test
@@ -36,6 +38,8 @@ public class AttributedConversionTest {
 
         //then
         assertEquals(345l, campaignId);
+        assertTrue(campaign1.isAttributed());
+        assertFalse(campaign2.isAttributed());
     }
 
     @Test

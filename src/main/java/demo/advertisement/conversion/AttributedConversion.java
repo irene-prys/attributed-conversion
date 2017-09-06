@@ -18,17 +18,28 @@ public class AttributedConversion {
      * @return Campaign id of a click action that most recently occured right before the purchase date.
      */
     public Long attributeConversion(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
+        attributeToCampaign(purchaseDate, histories, campaigns);
+        return findCampaignWithLastClickAction(purchaseDate, histories, campaigns);
+    }
+
+    private long findCampaignWithLastClickAction(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
+        Optional<History> history = histories.stream().filter(h -> purchaseDate.after(h.getDate())).sorted(Comparator.comparing(History::getDate)).findFirst();
+        return history.isPresent() ? history.get().getCampaignId() : NOT_FOUND;
+    }
+
+    private void attributeToCampaign(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
         Optional<Campaign> prospectingCampaign = findActiveProspectingCampaign(purchaseDate, campaigns);
         if (prospectingCampaign.isPresent()) {
-            return prospectingCampaign.get().getCampaignId();
+            prospectingCampaign.get().attribute();
+        } else {
+            Optional<Campaign> activeCampaign = findActiveCampaign(histories, campaigns);
+            if (activeCampaign.isPresent()) {
+                activeCampaign.get().attribute();
+            }
         }
-
-        Optional<Long> campaignWithLastClickAction = findCampaignWithLastClickAction(histories, campaigns);
-        return campaignWithLastClickAction.isPresent() ? campaignWithLastClickAction.get() : NOT_FOUND;
     }
 
     private Optional<Campaign> findActiveProspectingCampaign(Date purchaseDate, List<Campaign> campaigns) {
-
         List<Campaign> prospectingCampaigns = campaigns.stream().
                 filter(campaign -> campaign.getType() == CampaignType.PROSPECTING
                         && campaign.isActive(purchaseDate)).collect(Collectors.toList());
@@ -37,23 +48,34 @@ public class AttributedConversion {
         return Optional.ofNullable(foundCampaign);
     }
 
-    private Optional<Long> findCampaignWithLastClickAction(List<History> histories, List<Campaign> campaigns) {
+    private Optional<Campaign> findActiveCampaign(List<History> histories, List<Campaign> campaigns) {// todo: need refactoring
         Map<Long, List<History>> historyGropedByCampaigns = histories.stream()
                 .filter(history -> ACTION_TO_ATTRIBUTE.equals(history.getAction().toLowerCase()))
                 .collect(Collectors.groupingBy(History::getCampaignId));
 
-        List<History> historiesWithLastEvents = new ArrayList<>();
+        History historiesWithLastEvents = null;
         for (final Campaign campaign : campaigns) {
             List<History> historiesOfCertainCampaign = historyGropedByCampaigns.get(campaign.getCampaignId());
             History history = historiesOfCertainCampaign.stream().filter(h -> campaign.isActive(h.getDate()))
                     .max(Comparator.comparing(History::getDate)).get();
-            historiesWithLastEvents.add(history);
+
+            if(historiesWithLastEvents == null) {
+                historiesWithLastEvents = history;
+            } else {
+                historiesWithLastEvents = history.getDate().after(historiesWithLastEvents.getDate()) ? history : historiesWithLastEvents;
+            }
+
         }
 
-        historiesWithLastEvents.sort(Comparator.comparing(History::getDate));
-        Long foundCampaign = historiesWithLastEvents.isEmpty() ? null : historiesWithLastEvents.get(0).getCampaignId();
+        Campaign foundCampaign = null;
+        if (historiesWithLastEvents != null) {
+            foundCampaign = findCampaign(campaigns, historiesWithLastEvents.getCampaignId());
+        }
 
         return Optional.ofNullable(foundCampaign);
     }
 
+    private Campaign findCampaign(List<Campaign> campaigns, long id) {
+        return campaigns.stream().filter(campaign -> campaign.getCampaignId() == id).findAny().get();
+    }
 }
