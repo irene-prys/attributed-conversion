@@ -60,13 +60,15 @@ public class AttributedConversion {
         Campaign campaignToAttribute = null;
         for (final Campaign campaign : campaigns) {
             List<History> historiesOfCertainCampaign = historyGropedByCampaigns.get(campaign.getCampaignId());
-            History history = historiesOfCertainCampaign.stream()
+            Optional<History> latestHistoryOfCertainCampaign = historiesOfCertainCampaign.stream()
                     .filter(h -> campaign.isActive(h.getDate()))
-                    .max(Comparator.comparing(History::getDate)).get();
+                    .max(Comparator.comparing(History::getDate));
 
-            historyWithLastEvent = compareAndGetLatest(historyWithLastEvent, history);
-            if (historyWithLastEvent.getCampaignId() == campaign.getCampaignId()) {
-                campaignToAttribute = campaign;
+            if(latestHistoryOfCertainCampaign.isPresent()) {
+                historyWithLastEvent = compareAndGetLatest(historyWithLastEvent, latestHistoryOfCertainCampaign.get());
+                if (historyWithLastEvent.getCampaignId() == campaign.getCampaignId()) {
+                    campaignToAttribute = campaign;
+                }
             }
         }
 
