@@ -21,55 +21,39 @@ import static org.junit.Assert.assertTrue;
 
 public class AttributedConversionTest {
     @Test
-    public void shouldAttributeToProspectingCampaign() {
+    public void shouldAttributeToProspectingCampaign() throws FileReaderException {
         //given
-        Campaign campaign1 = new Campaign(CampaignType.PROSPECTING, 234,
-                new AttributionWindow(getDate(2017, Month.JUNE, 20), getDate(2017, Month.AUGUST, 01)));
-        Campaign campaign2 = new Campaign(CampaignType.RETARGETING, 345,
-                new AttributionWindow(getDate(2017, Month.JUNE, 20), getDate(2017, Month.AUGUST, 01)));
-        List<Campaign> campaigns = Arrays.asList(campaign1, campaign2);
-
-        History history1 = new History("click", getDate(2017, Month.JUNE, 26), 234);
-        History history2 = new History("click", getDate(2017, Month.JUNE, 24), 345);
-        List<History> histories = Arrays.asList(history1, history2);
-
+        FileReader.ParsedData parsedData = parseFile("prospecting-campaign.json");
+        List<Campaign> campaigns = parsedData.getCampaigns();
         AttributedConversion attributedConversion = new AttributedConversion();
 
         //when
-        long campaignId = attributedConversion.attributeConversion(getDate(2017, Month.JUNE, 25), histories, campaigns);
+        long campaignId = attributedConversion.attributeConversion(parsedData.getPurchaseDate(), parsedData.getHistories(), campaigns);
 
         //then
         assertEquals(345l, campaignId);
-        assertTrue(campaign1.isAttributed());
-        assertFalse(campaign2.isAttributed());
+        assertTrue(campaigns.get(0).isAttributed());
+        assertFalse(campaigns.get(1).isAttributed());
     }
 
     @Test
-    public void shouldAttributeToRetargetingCampaign() {//retargeting-test.json
+    public void shouldAttributeToRetargetingCampaign() throws FileReaderException {
         //given
-        Campaign campaign1 = new Campaign(CampaignType.PROSPECTING, 234,
-                new AttributionWindow(getDate(2017, Month.JUNE, 20), getDate(2017, Month.JUNE, 24)));
-        Campaign campaign2 = new Campaign(CampaignType.RETARGETING, 345,
-                new AttributionWindow(getDate(2017, Month.JUNE, 20), getDate(2017, Month.AUGUST, 01)));
-        List<Campaign> campaigns = Arrays.asList(campaign1, campaign2);
-
-        History history1 = new History("click", getDate(2017, Month.JUNE, 26), 234);
-        History history2 = new History("click", getDate(2017, Month.JUNE, 24), 345);
-        List<History> histories = Arrays.asList(history1, history2);
-
+        FileReader.ParsedData parsedData = parseFile("retargeting-campaign.json");
+        List<Campaign> campaigns = parsedData.getCampaigns();
         AttributedConversion attributedConversion = new AttributedConversion();
 
         //when
-        long campaignId = attributedConversion.attributeConversion(getDate(2017, Month.JUNE, 25), histories, campaigns);
+        long campaignId = attributedConversion.attributeConversion(parsedData.getPurchaseDate(), parsedData.getHistories(), campaigns);
 
         //then
         assertEquals(345l, campaignId);
-        assertFalse(campaign1.isAttributed());
-        assertTrue(campaign2.isAttributed());
+        assertFalse(campaigns.get(0).isAttributed());
+        assertTrue(campaigns.get(1).isAttributed());
     }
 
     @Test
-    public void shouldReturnCampaignWithLatestClick() throws FileReaderException{//retargeting-test.json
+    public void shouldReturnCampaignWithLatestClick() throws FileReaderException {
         //given
         FileReader.ParsedData parsedData = parseFile("different-actions-test.json");
         AttributedConversion attributedConversion = new AttributedConversion();
@@ -85,13 +69,9 @@ public class AttributedConversionTest {
 
     }
 
-    private FileReader.ParsedData parseFile(String fileName) throws FileReaderException{
+    private FileReader.ParsedData parseFile(String fileName) throws FileReaderException {
         String pathToFile = FileReaderTest.class.getClassLoader().getResource(fileName).getPath();
         FileReader fileReader = new FileReader();
         return fileReader.readData(pathToFile);
-    }
-
-    private Date getDate(int year, Month month, int day) {
-        return Date.from(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

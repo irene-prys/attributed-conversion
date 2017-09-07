@@ -21,7 +21,7 @@ public class FileReaderTest {
 
     @Before
     public void setUp() throws FileReaderException {
-        String pathToFile = FileReaderTest.class.getClassLoader().getResource("reader-test.json").getPath();
+        String pathToFile = FileReaderTest.class.getClassLoader().getResource("file-to-parse.json").getPath();
         FileReader fileReader = new FileReader();
         this.parsedData = fileReader.readData(pathToFile);
     }
