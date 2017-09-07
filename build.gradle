@@ -6,9 +6,18 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1'
     testCompile 'junit:junit:4.12'
 }
 
 mainClassName = 'demo.advertisement.conversion.AttributedConversionStarter'
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'demo.advertisement.conversion.AttributedConversionStarter'
+        )
+    }
+}
 

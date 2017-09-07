@@ -4,6 +4,8 @@ import demo.advertisement.conversion.utils.FileParser;
 import demo.advertisement.conversion.utils.FileReaderException;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AttributedConversionStarter {
     private final static String FILE_NAME = "data.json";
@@ -23,6 +25,8 @@ public class AttributedConversionStarter {
 
     private static String getPathToFile() {
         String jarFullPath = FileParser.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        return jarFullPath + File.separator + FILE_NAME;
+        Path jarPath = Paths.get(jarFullPath);
+        String jarDirPath = jarPath.getParent().toString();
+        return jarDirPath + File.separator + FILE_NAME;
     }
 }
