@@ -13,7 +13,7 @@ public class AttributedConversionStarter {
     public static void main(String[] args) {
         FileParser jsonConverter = new FileParser();
         try {
-            FileParser.ParsedData data = jsonConverter.parse(getPathToFile());
+            FileParser.ParsedData data = jsonConverter.parse(getPathToFile(args.length > 0 ? args[0] : FILE_NAME));
             AttributedConversion attributedConversion = new AttributedConversion();
             long campaignId = attributedConversion.attributeConversion(data.getPurchaseDate(), data.getHistories(), data.getCampaigns());
             System.out.println("--->>>>>> campaign id is " + campaignId);
@@ -23,10 +23,10 @@ public class AttributedConversionStarter {
         }
     }
 
-    private static String getPathToFile() {
+    private static String getPathToFile(String fileName) {
         String jarFullPath = FileParser.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         Path jarPath = Paths.get(jarFullPath);
         String jarDirPath = jarPath.getParent().toString();
-        return jarDirPath + File.separator + FILE_NAME;
+        return jarDirPath + File.separator + fileName;
     }
 }
