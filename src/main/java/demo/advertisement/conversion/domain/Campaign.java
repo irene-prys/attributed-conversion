@@ -6,7 +6,7 @@ public class Campaign {
     private CampaignType type;
     private long campaignId;
     private AttributionWindow attributionWindow;
-    private boolean attributed;// todo: think it over
+    private boolean attributed;
 
     public Campaign() {
     }

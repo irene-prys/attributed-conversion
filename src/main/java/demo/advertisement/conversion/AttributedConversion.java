@@ -29,6 +29,9 @@ public class AttributedConversion {
         return history.isPresent() ? history.get().getCampaignId() : NOT_FOUND;
     }
 
+    // as it wasn't clear what exactly should happen in this method,
+    // but the logic of searching the proper campaign was described in the task,
+    // this method finds certain campaign and "attributes to" it
     private void attributeToCampaign(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
         Optional<Campaign> prospectingCampaign = findActiveProspectingCampaign(purchaseDate, campaigns);
         if (prospectingCampaign.isPresent()) {
@@ -51,7 +54,7 @@ public class AttributedConversion {
         return Optional.ofNullable(foundCampaign);
     }
 
-    private Optional<Campaign> findActiveCampaign(List<History> histories, List<Campaign> campaigns) {// todo: need refactoring
+    private Optional<Campaign> findActiveCampaign(List<History> histories, List<Campaign> campaigns) {
         Map<Long, List<History>> historyGropedByCampaigns = histories.stream()
                 .filter(history -> ACTION_TO_ATTRIBUTE.equals(history.getAction().toLowerCase()))
                 .collect(Collectors.groupingBy(History::getCampaignId));
