@@ -2,7 +2,7 @@ package demo.advertisement.conversion;
 
 import demo.advertisement.conversion.domain.Campaign;
 import demo.advertisement.conversion.domain.History;
-import demo.advertisement.conversion.utils.FileReader;
+import demo.advertisement.conversion.utils.FileParser;
 import demo.advertisement.conversion.utils.FileReaderException;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,13 +17,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class FileReaderTest {
-    private FileReader.ParsedData parsedData;
+    private FileParser.ParsedData parsedData;
 
     @Before
     public void setUp() throws FileReaderException {
         String pathToFile = FileReaderTest.class.getClassLoader().getResource("file-to-parse.json").getPath();
-        FileReader fileReader = new FileReader();
-        this.parsedData = fileReader.readData(pathToFile);
+        FileParser fileReader = new FileParser();
+        this.parsedData = fileReader.parse(pathToFile);
     }
 
     @Test
@@ -50,7 +50,6 @@ public class FileReaderTest {
         assertEquals("2017-06-20", formatDate(campaign2.getAttributionWindow().getStart()));
         assertEquals("2017-08-01", formatDate(campaign2.getAttributionWindow().getEnd()));
         assertFalse(campaign2.isAttributed());
-
     }
 
     @Test

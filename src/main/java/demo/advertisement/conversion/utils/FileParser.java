@@ -14,9 +14,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class FileReader {
+public class FileParser {
 
-    public ParsedData readData(String pathToFile) throws FileReaderException {
+    public ParsedData parse(String pathToFile) throws FileReaderException {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new java.io.FileReader(pathToFile));
