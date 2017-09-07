@@ -9,20 +9,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FileReader {
-    private final static String FILE_NAME = "data.json";
 
-    public ParsedData readData() throws FileReaderException {
+    public ParsedData readData(String pathToFile) throws FileReaderException {
         JSONParser parser = new JSONParser();
-        String jarFullPath = FileReader.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String pathToFile = jarFullPath + File.separator + FILE_NAME;
-
         try {
             Object obj = parser.parse(new java.io.FileReader(pathToFile));
             JSONObject jsonObject = (JSONObject) obj;
