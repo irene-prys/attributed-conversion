@@ -23,7 +23,9 @@ public class AttributedConversion {
     }
 
     private long findCampaignWithLastClickAction(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
-        Optional<History> history = histories.stream().filter(h -> purchaseDate.after(h.getDate())).sorted(Comparator.comparing(History::getDate)).findFirst();
+        Optional<History> history = histories.stream()
+                .filter(h -> purchaseDate.after(h.getDate()) && ACTION_TO_ATTRIBUTE.equals(h.getAction().toLowerCase()))
+                .sorted(Comparator.comparing(History::getDate)).findFirst();
         return history.isPresent() ? history.get().getCampaignId() : NOT_FOUND;
     }
 
@@ -40,9 +42,10 @@ public class AttributedConversion {
     }
 
     private Optional<Campaign> findActiveProspectingCampaign(Date purchaseDate, List<Campaign> campaigns) {
-        List<Campaign> prospectingCampaigns = campaigns.stream().
-                filter(campaign -> campaign.getType() == CampaignType.PROSPECTING
-                        && campaign.isActive(purchaseDate)).collect(Collectors.toList());
+        List<Campaign> prospectingCampaigns = campaigns.stream()
+                .filter(campaign -> campaign.getType() == CampaignType.PROSPECTING
+                        && campaign.isActive(purchaseDate))
+                .collect(Collectors.toList());
         Campaign foundCampaign = prospectingCampaigns.isEmpty() ? null : prospectingCampaigns.get(0);
 
         return Optional.ofNullable(foundCampaign);
@@ -53,29 +56,27 @@ public class AttributedConversion {
                 .filter(history -> ACTION_TO_ATTRIBUTE.equals(history.getAction().toLowerCase()))
                 .collect(Collectors.groupingBy(History::getCampaignId));
 
-        History historiesWithLastEvents = null;
+        History historyWithLastEvent = null;
+        Campaign campaignToAttribute = null;
         for (final Campaign campaign : campaigns) {
             List<History> historiesOfCertainCampaign = historyGropedByCampaigns.get(campaign.getCampaignId());
-            History history = historiesOfCertainCampaign.stream().filter(h -> campaign.isActive(h.getDate()))
+            History history = historiesOfCertainCampaign.stream()
+                    .filter(h -> campaign.isActive(h.getDate()))
                     .max(Comparator.comparing(History::getDate)).get();
 
-            if(historiesWithLastEvents == null) {
-                historiesWithLastEvents = history;
-            } else {
-                historiesWithLastEvents = history.getDate().after(historiesWithLastEvents.getDate()) ? history : historiesWithLastEvents;
+            historyWithLastEvent = compareAndGetLatest(historyWithLastEvent, history);
+            if (historyWithLastEvent.getCampaignId() == campaign.getCampaignId()) {
+                campaignToAttribute = campaign;
             }
-
         }
 
-        Campaign foundCampaign = null;
-        if (historiesWithLastEvents != null) {
-            foundCampaign = findCampaign(campaigns, historiesWithLastEvents.getCampaignId());
-        }
-
-        return Optional.ofNullable(foundCampaign);
+        return Optional.ofNullable(campaignToAttribute);
     }
 
-    private Campaign findCampaign(List<Campaign> campaigns, long id) {
-        return campaigns.stream().filter(campaign -> campaign.getCampaignId() == id).findAny().get();
+    private History compareAndGetLatest(History h1, History h2) {
+        if (h1 == null) {
+            return h2;
+        }
+        return h1.getDate().after(h2.getDate()) ? h1 : h2;
     }
 }
