@@ -27,7 +27,7 @@ public class AttributedConversionStarter {
             Optional<Campaign> attributedCampaign = campaigns.stream().filter((campaign -> campaign.isAttributed())).findAny();
             if (attributedCampaign.isPresent()) {
                 System.out.println(MessageFormat.format(ATTRIBUTED_CAMPAIGN_MSG,
-                        attributedCampaign.get().getCampaignId(),
+                        attributedCampaign.get().getId(),
                         attributedCampaign.get().getType()));
             } else {
                 System.out.println("No campaign was attributed to");
@@ -37,7 +37,6 @@ public class AttributedConversionStarter {
             e.printStackTrace();
         }
     }
-
 
     private static String getPathToFile(String fileName) {
         String jarFullPath = FileParser.class.getProtectionDomain().getCodeSource().getLocation().getPath();

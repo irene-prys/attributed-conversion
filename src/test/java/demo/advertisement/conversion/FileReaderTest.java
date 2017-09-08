@@ -38,14 +38,14 @@ public class FileReaderTest {
         List<Campaign> campaigns = parsedData.getCampaigns();
 
         Campaign campaign1 = campaigns.get(0);
-        assertEquals(234l, campaign1.getCampaignId());
+        assertEquals(234l, campaign1.getId());
         assertEquals("prospecting", campaign1.getType().toString().toLowerCase());
         assertEquals("2017-06-20", formatDate(campaign1.getAttributionWindow().getStart()));
         assertEquals("2017-08-01", formatDate(campaign1.getAttributionWindow().getEnd()));
         assertFalse(campaign1.isAttributed());
 
         Campaign campaign2 = campaigns.get(1);
-        assertEquals(345l, campaign2.getCampaignId());
+        assertEquals(345l, campaign2.getId());
         assertEquals("retargeting", campaign2.getType().toString().toLowerCase());
         assertEquals("2017-06-20", formatDate(campaign2.getAttributionWindow().getStart()));
         assertEquals("2017-08-01", formatDate(campaign2.getAttributionWindow().getEnd()));

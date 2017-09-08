@@ -49,7 +49,7 @@ public class FileParser {
         String start = (String) campaignsJsonObject.get("start");
         String end = (String) campaignsJsonObject.get("end");
 
-        return new Campaign(CampaignType.valueOf(campaignType.toUpperCase()), campaignId, new AttributionWindow(convertDate(start), convertDate(end)));
+        return new Campaign(campaignId, CampaignType.valueOf(campaignType.toUpperCase()), new AttributionWindow(convertDate(start), convertDate(end)));
     }
 
     private List<History> parseHistories(JSONArray historiesJsonArray) throws java.text.ParseException {

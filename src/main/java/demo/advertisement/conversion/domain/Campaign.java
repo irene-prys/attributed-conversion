@@ -3,17 +3,17 @@ package demo.advertisement.conversion.domain;
 import java.util.Date;
 
 public class Campaign {
+    private long id;
     private CampaignType type;
-    private long campaignId;
     private AttributionWindow attributionWindow;
     private boolean attributed;
 
     public Campaign() {
     }
 
-    public Campaign(CampaignType type, long campaignId, AttributionWindow window) {
+    public Campaign(long campaignId, CampaignType type, AttributionWindow window) {
+        this.id = campaignId;
         this.type = type;
-        this.campaignId = campaignId;
         this.attributionWindow = window;
     }
 
@@ -25,12 +25,12 @@ public class Campaign {
         this.type = type;
     }
 
-    public long getCampaignId() {
-        return campaignId;
+    public long getId() {
+        return id;
     }
 
-    public void setCampaignId(long campaignId) {
-        this.campaignId = campaignId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public AttributionWindow getAttributionWindow() {
