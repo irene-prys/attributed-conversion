@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class AttributedConversionTest {
     @Test
-    public void shouldAttributeToProspectingCampaign() throws FileReaderException {
+    public void shouldAttributeToProspectingCampaignAndFindLastClick() throws FileReaderException {
         //given
         FileParser.ParsedData parsedData = parseFile("prospecting-campaign.json");
         List<Campaign> campaigns = parsedData.getCampaigns();
@@ -45,7 +45,7 @@ public class AttributedConversionTest {
     @Test
     public void shouldReturnCampaignWithLatestClick() throws FileReaderException {
         //given
-        FileParser.ParsedData parsedData = parseFile("different-actions-test.json");
+        FileParser.ParsedData parsedData = parseFile("different-actions.json");
         AttributedConversion attributedConversion = new AttributedConversion();
         List<Campaign> campaigns = parsedData.getCampaigns();
 
