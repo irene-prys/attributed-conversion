@@ -1,0 +1,29 @@
+{
+  "purchase_date": "2017-06-25",
+  "history": [
+    {
+      "action": "click",
+      "date": "2017-06-26",
+      "campaign_id": 234
+    },
+    {
+      "action": "click",
+      "date": "2017-06-24",
+      "campaign_id": 345
+    }
+  ],
+  "campaign_info": [
+    {
+      "campaign_id": 234,
+      "campaign_type": "prospecting",
+      "start": "2017-06-20",
+      "end": "2017-08-01"
+    },
+    {
+      "campaign_id": 345,
+      "campaign_type": "retargeting",
+      "start": "2017-06-20",
+      "end": "2017-08-01"
+    }
+  ]
+}

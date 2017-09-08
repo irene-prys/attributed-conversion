@@ -44,12 +44,12 @@ public class FileParser {
     }
 
     private Campaign parseCampaign(JSONObject campaignsJsonObject) throws java.text.ParseException {
-        String campaignId = (String) campaignsJsonObject.get("campaign_id");
+        long campaignId = convertToNumber(campaignsJsonObject.get("campaign_id"));
         String campaignType = (String) campaignsJsonObject.get("campaign_type");
         String start = (String) campaignsJsonObject.get("start");
         String end = (String) campaignsJsonObject.get("end");
 
-        return new Campaign(CampaignType.valueOf(campaignType.toUpperCase()), Long.parseLong(campaignId), new AttributionWindow(convertDate(start), convertDate(end)));
+        return new Campaign(CampaignType.valueOf(campaignType.toUpperCase()), campaignId, new AttributionWindow(convertDate(start), convertDate(end)));
     }
 
     private List<History> parseHistories(JSONArray historiesJsonArray) throws java.text.ParseException {
@@ -65,9 +65,9 @@ public class FileParser {
     private History parseHistory(JSONObject historyJsonObject) throws java.text.ParseException {
         String action = (String) historyJsonObject.get("action");
         String date = (String) historyJsonObject.get("date");
-        String campaignId = (String) historyJsonObject.get("campaign_id");
+        long campaignId = convertToNumber(historyJsonObject.get("campaign_id"));
 
-        return new History(action, convertDate(date), Long.parseLong(campaignId));
+        return new History(action, convertDate(date), campaignId);
     }
 
     private Date convertDate(String date) throws java.text.ParseException {
@@ -97,5 +97,9 @@ public class FileParser {
         public List<Campaign> getCampaigns() {
             return campaigns;
         }
+    }
+
+    private long convertToNumber(Object obj) throws java.text.ParseException {
+        return obj instanceof String ? Long.parseLong((String) obj) : (Long) obj;
     }
 }

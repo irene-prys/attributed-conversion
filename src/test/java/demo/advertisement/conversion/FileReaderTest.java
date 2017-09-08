@@ -67,6 +67,17 @@ public class FileReaderTest {
         assertEquals(345l, history2.getCampaignId());
     }
 
+    @Test
+    public void shouldParseFileWithNumbersInside() throws FileReaderException {
+        String pathToFile = FileReaderTest.class.getClassLoader().getResource("file-to-parse-with-numbers.json").getPath();
+        FileParser fileReader = new FileParser();
+        FileParser.ParsedData parsedData = fileReader.parse(pathToFile);
+        assertEquals("2017-06-25", formatDate(parsedData.getPurchaseDate()));
+        assertEquals(2, parsedData.getHistories().size());
+        assertEquals(2, parsedData.getCampaigns().size());
+        assertEquals(234l, parsedData.getHistories().get(0).getCampaignId());
+    }
+
     private String formatDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(date);
