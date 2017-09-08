@@ -29,9 +29,9 @@ public class AttributedConversion {
         return history.isPresent() ? history.get().getCampaignId() : NOT_FOUND;
     }
 
-    // as it wasn't clear what exactly should happen in this method,
-    // but the logic of searching the proper campaign was described in the task,
-    // this method finds certain campaign and "attributes to" it
+    // it wasn't clear what exactly mean "to attribute to a campaign", how it works.
+    // I suppose it must be some specific logic for it, that wasn't described in the documentation to this task
+    // maybe some method should be called for a found campaign
     private void attributeToCampaign(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
         Optional<Campaign> prospectingCampaign = findActiveProspectingCampaign(purchaseDate, campaigns);
         if (prospectingCampaign.isPresent()) {
