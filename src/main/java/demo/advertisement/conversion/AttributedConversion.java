@@ -25,7 +25,7 @@ public class AttributedConversion {
     private long findCampaignWithLastClickAction(Date purchaseDate, List<History> histories, List<Campaign> campaigns) {
         Optional<History> history = histories.stream()
                 .filter(h -> purchaseDate.after(h.getDate()) && ACTION_TO_ATTRIBUTE.equals(h.getAction().toLowerCase()))
-                .sorted(Comparator.comparing(History::getDate)).findFirst();
+                .sorted(Comparator.comparing(History::getDate).reversed()).findFirst();
         return history.isPresent() ? history.get().getCampaignId() : NOT_FOUND;
     }
 

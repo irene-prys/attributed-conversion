@@ -10,6 +10,11 @@
       "action": "click",
       "date": "2017-06-24",
       "campaign_id": "345"
+    },
+    {
+      "action": "click",
+      "date": "2017-06-23",
+      "campaign_id": "234"
     }
   ],
   "campaign_info": [
